@@ -1,0 +1,8 @@
+<?php
+// Ejemplo de las lineas que scripts/respaldo_db.sh necesita encontrar en el
+// wp-config.php real de su sitio (Laboratorio 1/4). No es un archivo
+// funcional: solo muestra el formato que su script debe saber leer.
+define('DB_NAME', 'nombre_de_su_base');
+define('DB_USER', 'usuario_de_su_base');
+define('DB_PASSWORD', 'clave_de_su_base');
+define('DB_HOST', 'localhost');

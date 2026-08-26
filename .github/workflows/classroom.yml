@@ -1,0 +1,160 @@
+name: GitHub Classroom Autograding
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+
+    services:
+      mariadb:
+        image: mariadb:11
+        env:
+          MARIADB_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mariadb-admin ping -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: Clonar repositorio (con historial completo, para las pruebas de evidencia)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Dar permisos de ejecución
+        run: chmod +x scripts/*.sh tests/*.sh 2>/dev/null || true
+
+      - name: Estructura, entrega.env y evidencia entregada
+        id: estructura
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Estructura, entrega.env y evidencia entregada
+          setup-command: chmod +x tests/*.sh scripts/*.sh 2>/dev/null || true
+          command: bash tests/test_estructura.sh
+          expected-output: "PASS"
+          comparison-method: exact
+          timeout: 10
+          max-score: 1
+
+      - name: respaldo_db.sh maneja errores (wp-config.php inválido o ausente)
+        id: respaldo_db_error
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: respaldo_db.sh maneja errores
+          setup-command: chmod +x tests/*.sh scripts/*.sh 2>/dev/null || true
+          command: bash tests/test_respaldo_db_error.sh
+          expected-output: "PASS"
+          comparison-method: exact
+          timeout: 10
+          max-score: 1
+
+      - name: respaldo_db.sh genera un dump real con mysqldump
+        id: respaldo_db_exito
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: respaldo_db.sh genera un dump real con mysqldump
+          setup-command: chmod +x tests/*.sh scripts/*.sh 2>/dev/null || true
+          command: bash tests/test_respaldo_db_exito.sh
+          expected-output: "PASS"
+          comparison-method: exact
+          timeout: 30
+          max-score: 1
+
+      - name: respaldo_321.sh cumple la regla 3-2-1 sin filtrar wp-config.php
+        id: respaldo_321
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: respaldo_321.sh cumple la regla 3-2-1 sin filtrar wp-config.php
+          setup-command: chmod +x tests/*.sh scripts/*.sh 2>/dev/null || true
+          command: bash tests/test_respaldo_321.sh
+          expected-output: "PASS"
+          comparison-method: exact
+          timeout: 10
+          max-score: 1
+
+      - name: restaurar.sh recupera los archivos del sitio
+        id: restaurar_sitio
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: restaurar.sh recupera los archivos del sitio
+          setup-command: chmod +x tests/*.sh scripts/*.sh 2>/dev/null || true
+          command: bash tests/test_restaurar_sitio.sh
+          expected-output: "PASS"
+          comparison-method: exact
+          timeout: 10
+          max-score: 1
+
+      - name: restaurar.sh recupera la base de datos en una instancia limpia
+        id: restaurar_bd
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: restaurar.sh recupera la base de datos en una instancia limpia
+          setup-command: chmod +x tests/*.sh scripts/*.sh 2>/dev/null || true
+          command: bash tests/test_restaurar_bd.sh
+          expected-output: "PASS"
+          comparison-method: exact
+          timeout: 30
+          max-score: 1
+
+      - name: cron y systemd apuntan al sitio real (entrega.env)
+        id: cron_systemd
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: cron y systemd apuntan al sitio real
+          setup-command: chmod +x tests/*.sh scripts/*.sh 2>/dev/null || true
+          command: bash tests/test_cron_systemd.sh
+          expected-output: "PASS"
+          comparison-method: exact
+          timeout: 10
+          max-score: 1
+
+      - name: Evidencia v1 es un respaldo real de su propio sitio
+        id: evidencia_v1
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Evidencia v1 es un respaldo real de su propio sitio
+          setup-command: chmod +x tests/*.sh scripts/*.sh 2>/dev/null || true
+          command: bash tests/test_evidencia_v1.sh
+          expected-output: "PASS"
+          comparison-method: exact
+          timeout: 10
+          max-score: 1
+
+      - name: Evidencia v2 demuestra un cambio incremental real
+        id: evidencia_v2
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Evidencia v2 demuestra un cambio incremental real
+          setup-command: chmod +x tests/*.sh scripts/*.sh 2>/dev/null || true
+          command: bash tests/test_evidencia_v2.sh
+          expected-output: "PASS"
+          comparison-method: exact
+          timeout: 10
+          max-score: 1
+
+      - name: Autograding Reporter
+        uses: classroom-resources/autograding-grading-reporter@v1
+        env:
+          ESTRUCTURA_RESULTS: "${{steps.estructura.outputs.result}}"
+          RESPALDO_DB_ERROR_RESULTS: "${{steps.respaldo_db_error.outputs.result}}"
+          RESPALDO_DB_EXITO_RESULTS: "${{steps.respaldo_db_exito.outputs.result}}"
+          RESPALDO_321_RESULTS: "${{steps.respaldo_321.outputs.result}}"
+          RESTAURAR_SITIO_RESULTS: "${{steps.restaurar_sitio.outputs.result}}"
+          RESTAURAR_BD_RESULTS: "${{steps.restaurar_bd.outputs.result}}"
+          CRON_SYSTEMD_RESULTS: "${{steps.cron_systemd.outputs.result}}"
+          EVIDENCIA_V1_RESULTS: "${{steps.evidencia_v1.outputs.result}}"
+          EVIDENCIA_V2_RESULTS: "${{steps.evidencia_v2.outputs.result}}"
+        with:
+          runners: estructura,respaldo_db_error,respaldo_db_exito,respaldo_321,restaurar_sitio,restaurar_bd,cron_systemd,evidencia_v1,evidencia_v2

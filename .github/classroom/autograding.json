@@ -1,0 +1,94 @@
+{
+  "tests": [
+    {
+      "name": "Estructura, entrega.env y evidencia entregada",
+      "setup": "chmod +x tests/*.sh scripts/*.sh 2>/dev/null || true",
+      "run": "bash tests/test_estructura.sh",
+      "input": "",
+      "output": "PASS",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "respaldo_db.sh maneja errores",
+      "setup": "chmod +x tests/*.sh scripts/*.sh 2>/dev/null || true",
+      "run": "bash tests/test_respaldo_db_error.sh",
+      "input": "",
+      "output": "PASS",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "respaldo_db.sh genera un dump real con mysqldump",
+      "setup": "chmod +x tests/*.sh scripts/*.sh 2>/dev/null || true",
+      "run": "bash tests/test_respaldo_db_exito.sh",
+      "input": "",
+      "output": "PASS",
+      "comparison": "exact",
+      "timeout": 30,
+      "points": 1
+    },
+    {
+      "name": "respaldo_321.sh cumple la regla 3-2-1 sin filtrar wp-config.php",
+      "setup": "chmod +x tests/*.sh scripts/*.sh 2>/dev/null || true",
+      "run": "bash tests/test_respaldo_321.sh",
+      "input": "",
+      "output": "PASS",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "restaurar.sh recupera los archivos del sitio",
+      "setup": "chmod +x tests/*.sh scripts/*.sh 2>/dev/null || true",
+      "run": "bash tests/test_restaurar_sitio.sh",
+      "input": "",
+      "output": "PASS",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "restaurar.sh recupera la base de datos en una instancia limpia",
+      "setup": "chmod +x tests/*.sh scripts/*.sh 2>/dev/null || true",
+      "run": "bash tests/test_restaurar_bd.sh",
+      "input": "",
+      "output": "PASS",
+      "comparison": "exact",
+      "timeout": 30,
+      "points": 1
+    },
+    {
+      "name": "cron y systemd apuntan al sitio real",
+      "setup": "chmod +x tests/*.sh scripts/*.sh 2>/dev/null || true",
+      "run": "bash tests/test_cron_systemd.sh",
+      "input": "",
+      "output": "PASS",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Evidencia v1 es un respaldo real de su propio sitio",
+      "setup": "chmod +x tests/*.sh scripts/*.sh 2>/dev/null || true",
+      "run": "bash tests/test_evidencia_v1.sh",
+      "input": "",
+      "output": "PASS",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Evidencia v2 demuestra un cambio incremental real",
+      "setup": "chmod +x tests/*.sh scripts/*.sh 2>/dev/null || true",
+      "run": "bash tests/test_evidencia_v2.sh",
+      "input": "",
+      "output": "PASS",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 1
+    }
+  ]
+}
